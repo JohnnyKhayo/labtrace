@@ -10,4 +10,12 @@ class Sample:
         self.status = status
         self.notes = notes.strip()
 
-
+    def is_valid(self):
+        """Return an error message if invalid, otherwise return empty string."""
+        if not self.sample_id:
+            return "Sample ID is required."
+        if not self.sample_type:
+            return "Sample type is required."
+        if not self.collected_by:
+            return "Collected by is required."
+        return ""
