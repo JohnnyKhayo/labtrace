@@ -35,7 +35,7 @@ with tab1:
 
 with tab2:
     st.subheader("Add New Sample")
-    with st.form("add_form", clear_on_submit=True):
+    with st.form("add_form"):
         sample_id = st.text_input(
             "Sample ID",
             placeholder="e.g. SMP-001",
