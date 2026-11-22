@@ -72,5 +72,15 @@ with tab4:
             database.delete_sample(selected_id)
             st.success("Sample deleted.")
             st.rerun()
+            
 with tab5:
     st.subheader("Summary")
+    samples = database.get_all_samples()
+    if not samples:
+        st.info("No samples yet.")
+    else:
+        from collections import Counter
+        status_counts = Counter(s["status"] for s in samples)
+        st.write("**Samples by status:**")
+        st.write(dict(status_counts))
+        st.metric("Total Samples", len(samples))
