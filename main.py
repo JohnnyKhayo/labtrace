@@ -36,10 +36,23 @@ with tab1:
 with tab2:
     st.subheader("Add New Sample")
     with st.form("add_form", clear_on_submit=True):
-        sample_id = st.text_input("Sample ID")
-        sample_type = st.text_input("Sample Type")
-        collected_by = st.text_input("Collected By")
-        notes = st.text_area("Notes (optional)")
+        sample_id = st.text_input(
+            "Sample ID",
+            placeholder="e.g. SMP-001",
+            help="Letters, numbers, and hyphens only"
+        )
+        sample_type = st.text_input(
+            "Sample Type",
+            placeholder="e.g. Blood, Urine, Tissue"
+        )
+        collected_by = st.text_input(
+            "Collected By",
+            placeholder="Name of person who collected the sample"
+        )
+        notes = st.text_area(
+            "Notes (optional)",
+            placeholder="Any additional information"
+        )
         submitted = st.form_submit_button("Add Sample")
 
         if submitted:
@@ -56,6 +69,7 @@ with tab2:
                     st.error("A sample with this ID already exists.")
                 except Exception as e:
                     st.error(f"Could not add sample: {e}")
+
               
 with tab3:
     st.subheader("Update Sample Status")
