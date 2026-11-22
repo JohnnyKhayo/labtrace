@@ -23,3 +23,9 @@ class Sample:
         if not self.collected_by:
             return "Collected by is required."
         return ""
+
+    def move_to(self, new_status):
+        """Change the sample status to a new valid status."""
+        if new_status not in self.STATUSES:
+            raise ValueError(f"Invalid status: {new_status}")
+        self.status = new_status
