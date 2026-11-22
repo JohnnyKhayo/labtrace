@@ -61,5 +61,16 @@ with tab3:
             
 with tab4:
     st.subheader("Delete Sample")
+    samples = database.get_all_samples()
+    if not samples:
+        st.info("No samples to delete.")
+    else:
+        sample_ids = [s["sample_id"] for s in samples]
+        selected_id = st.selectbox("Select Sample to Delete", sample_ids, key="delete_select")
+
+        if st.button("Delete Sample", type="primary"):
+            database.delete_sample(selected_id)
+            st.success("Sample deleted.")
+            st.rerun()
 with tab5:
     st.subheader("Summary")
