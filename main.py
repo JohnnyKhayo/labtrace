@@ -44,7 +44,21 @@ with tab2:
                     st.error(f"Could not add sample: {e}")
               
 with tab3:
-    st.subheader("Update Sample")
+    st.subheader("Update Sample Status")
+    samples = database.get_all_samples()
+    if not samples:
+        st.info("No samples to update.")
+    else:
+        sample_ids = [s["sample_id"] for s in samples]
+        selected_id = st.selectbox("Select Sample", sample_ids)
+        from sample import Sample
+        new_status = st.selectbox("New Status", Sample.STATUSES)
+
+        if st.button("Update Status"):
+            database.update_sample_status(selected_id, new_status)
+            st.success(f"Status updated to {new_status}")
+            st.rerun()
+            
 with tab4:
     st.subheader("Delete Sample")
 with tab5:
