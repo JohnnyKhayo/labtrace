@@ -2,6 +2,7 @@ import sqlite3
 
 
 DB_NAME = "labtrace.db"
+from sample import Sample
 
 
 def get_connection():
@@ -23,3 +24,15 @@ def create_table():
                 status TEXT NOT NULL,
                 notes TEXT
             ) """)
+
+def add_sample(sample: Sample):
+    """Add a new sample to the database."""
+    with get_connection() as conn:
+        conn.execute("""
+        INSERT INTO samples (sample_id, sample_type, collected_by, status, notes)
+        VALUES (?, ?, ?, ?, ?)""", (
+            sample.sample_id,
+            sample.sample_type,
+            sample.collected_by,
+            sample.status,
+            sample.notes))
