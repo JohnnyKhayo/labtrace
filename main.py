@@ -83,7 +83,7 @@ with tab4:
         selected_id = st.selectbox("Select Sample to Delete", sample_ids, key="delete_select")
 
         confirm = st.checkbox("I confirm I want to delete this sample")
-        if st.button("Delete Sample", type="primary, disabled=not confirm"):
+        if st.button("Delete Sample", disabled=not confirm):
             database.delete_sample(selected_id)
             st.success("Sample deleted.")
             st.rerun()
@@ -99,3 +99,7 @@ with tab5:
         st.write("**Samples by status:**")
         st.write(dict(status_counts))
         st.metric("Total Samples", len(samples))
+
+
+        st.divider()
+st.caption("LabTrace • Sample tracking tool")
