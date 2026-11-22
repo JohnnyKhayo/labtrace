@@ -16,11 +16,22 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(
 
 with tab1:
     st.subheader("All Samples")
+    search = st.text_input("Search by Sample ID or Type", "")
+
     samples = database.get_all_samples()
+
+    if search:
+        search = search.lower()
+        samples = [
+            s for s in samples
+            if search in s["sample_id"].lower() or search in s["sample_type"].lower()
+        ]
+
+    
     if samples:
         st.dataframe(samples, use_container_width=True)
     else:
-        st.info("No samples yet.")
+        st.info("No samples found.")
 
 with tab2:
     st.subheader("Add New Sample")
