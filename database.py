@@ -42,3 +42,18 @@ def get_all_samples():
     with get_connection() as conn:
         rows = conn.execute("SELECT * FROM samples ORDER BY id DESC").fetchall()
         return [dict(row) for row in rows]
+
+def update_sample_status(sample_id, new_status):
+    """Update the status of a sample."""
+    with get_connection() as conn:
+        conn.execute(
+            """
+            UPDATE samples
+            SET status = ?
+            WHERE sample_id = ?
+            """, (new_status, sample_id))
+
+def delete_sample(sample_id):
+    """Delete a sample from the database by its sample_id."""
+    with get_connection() as conn:
+        conn.execute("DELETE FROM samples WHERE sample_id = ?", (sample_id,))
