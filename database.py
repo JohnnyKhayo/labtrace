@@ -36,3 +36,9 @@ def add_sample(sample: Sample):
             sample.collected_by,
             sample.status,
             sample.notes))
+
+def get_all_samples():
+    """"Return all samples from the database as a list of dictionaries."""
+    with get_connection() as conn:
+        rows = conn.execute("SELECT * FROM samples ORDER BY id DESC").fetchall()
+        return [dict(row) for row in rows]
