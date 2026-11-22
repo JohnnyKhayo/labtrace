@@ -1,5 +1,6 @@
 import streamlit as st
 import database
+import sqlite3
 
 
 # ensures the table exists
@@ -40,6 +41,8 @@ with tab2:
                 try:
                     database.add_sample(sample)
                     st.success("Sample added successfully.")
+                except sqlite3.IntegrityError:
+                    st.error("A sample with this ID already exists.")
                 except Exception as e:
                     st.error(f"Could not add sample: {e}")
               
