@@ -22,6 +22,8 @@ class Sample:
             return "Sample type is required."
         if not self.collected_by:
             return "Collected by is required."
+        if self.status not in self.STATUSES:
+            return "Invalid status."
         return ""
 
     def move_to(self, new_status):
