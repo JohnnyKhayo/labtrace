@@ -1,3 +1,5 @@
+import re
+
 class Sample:
     """Represents a lab sample."""
 
@@ -14,6 +16,8 @@ class Sample:
         """Return an error message if invalid, otherwise return empty string."""
         if not self.sample_id:
             return "Sample ID is required."
+        if not re.fullmatch(r"[A-Za-z0-9\-]+", self.sample_id):
+            return "Sample ID can only contain letters, numbers, and hyphens."
         if not self.sample_type:
             return "Sample type is required."
         if not self.collected_by:
