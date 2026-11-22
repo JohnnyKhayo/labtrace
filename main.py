@@ -15,6 +15,12 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(
 
 with tab1:
     st.subheader("All Samples")
+    samples = database.get_all_samples()
+    if samples:
+        st.dataframe(samples, use_container_width=True)
+    else:
+        st.info("No samples yet.")
+        
 with tab2:
     st.subheader("Add New Sample")
 with tab3:
