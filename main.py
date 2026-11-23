@@ -35,7 +35,11 @@ with tab1:
 
 with tab2:
     st.subheader("Add New Sample")
-    with st.form("add_form"):
+    if "form_key" not in st.session_state:
+        st.session_state.form_key = 0
+    
+    with st.form(key=f"add_form_{st.session_state.form_key}"):
+
         sample_id = st.text_input(
             "Sample ID",
             placeholder="e.g. SMP-001",
@@ -65,6 +69,8 @@ with tab2:
                 try:
                     database.add_sample(sample)
                     st.success("Sample added successfully.")
+                    st.session_state.form_key += 1
+                    st.rerun()
                 except sqlite3.IntegrityError:
                     st.error("A sample with this ID already exists.")
                 except Exception as e:
@@ -96,10 +102,16 @@ with tab4:
         sample_ids = [s["sample_id"] for s in samples]
         selected_id = st.selectbox("Select Sample to Delete", sample_ids, key="delete_select")
 
-        confirm = st.checkbox("I confirm I want to delete this sample")
+        if st.session_state.get("reset_delete_confirm", False):
+            st.session_state.delete_confirm = False
+            st.session_state.reset_delete_confirm = False
+
+        confirm = st.checkbox("I confirm I want to delete this sample", key="delete_confirm")
+
         if st.button("Delete Sample", disabled=not confirm):
             database.delete_sample(selected_id)
             st.success("Sample deleted.")
+            st.session_state.reset_delete_confirm = True
             st.rerun()
 
 with tab5:
