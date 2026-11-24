@@ -2,19 +2,29 @@
 import re
 from bs4 import BeautifulSoup
 
+
 def normalize_text(text):
     """Clean whitespace from extracted webpage text."""
 
     return re.sub(r"\s+", " ", text).strip()
 
-def extract_section(soup, section_name):
-    """Extract content belonging to a particular heading from the laboratory guidelines page."""
 
-    headings = soup.find_all(
-        re.compile(r"^h[1-6]$"),
-        string=lambda text: (text is not None
-            and normalize_text(text).casefold()
-            == section_name.casefold()))
+def extract_section(soup, section_name):
+    """
+    Extract content belonging to a particular heading
+    from the laboratory guidelines page.
+    """
+
+    headings = []
+
+    # Find headings using their complete visible text.
+    for heading in soup.find_all(re.compile(r"^h[1-6]$")):
+        heading_text = normalize_text(
+            heading.get_text(" ", strip=True)
+        )
+
+        if heading_text.casefold() == section_name.casefold():
+            headings.append(heading)
 
     if not headings:
         return None
@@ -25,7 +35,9 @@ def extract_section(soup, section_name):
 
         heading_level = int(heading.name[1])
 
-        for element in heading.find_all_next(["h1", "h2", "h3", "h4", "h5", "h6", "p", "li"]):
+        for element in heading.find_all_next(
+            ["h1", "h2", "h3", "h4", "h5", "h6", "p", "li"]
+        ):
 
             # Stop when another heading at the same
             # or a higher level begins.
@@ -37,7 +49,8 @@ def extract_section(soup, section_name):
 
                 continue
 
-            # Avoid extracting paragraphs twice when they are already contained inside a list item.
+            # Avoid extracting paragraphs already
+            # contained inside list items.
             if element.name == "p" and element.find_parent("li"):
                 continue
 
@@ -51,20 +64,27 @@ def extract_section(soup, section_name):
     if not extracted_items:
         return None
 
-    return {"section": section_name, "content": extracted_items}
+    return {
+        "section": section_name,
+        "content": extracted_items
+    }
 
 
 def parse_guidelines(html, sample_type):
-    """Parse the webpage and return the requested blood specimen guidance."""
+    """
+    Parse the webpage and return guidance for the
+    requested blood specimen type.
+    """
 
     soup = BeautifulSoup(html, "html.parser")
 
     sections = {
         "whole blood": "Whole Blood Specimens",
         "serum": "Serum and Plasma Specimens",
-        "plasma": "Serum and Plasma Specimens"}
+        "plasma": "Serum and Plasma Specimens"
+    }
 
-    selected_type = sample_type.strip().casefold()
+    selected_type = normalize_text(sample_type).casefold()
 
     section_name = sections.get(selected_type)
 
