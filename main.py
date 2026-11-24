@@ -2,8 +2,6 @@ import streamlit as st
 import database
 import sqlite3
 
-
-# ensures the table exists
 database.create_table()
 
 st.set_page_config(page_title="LabTrace", layout="wide")
@@ -24,10 +22,8 @@ with tab1:
         search = search.lower()
         samples = [
             s for s in samples
-            if search in s["sample_id"].lower() or search in s["sample_type"].lower()
-        ]
+            if search in s["sample_id"].lower() or search in s["sample_type"].lower()]
 
-    
     if samples:
         st.dataframe(samples, use_container_width=True)
     else:
@@ -43,20 +39,20 @@ with tab2:
         sample_id = st.text_input(
             "Sample ID",
             placeholder="e.g. SMP-001",
-            help="Letters, numbers, and hyphens only"
-        )
+            help="Letters, numbers, and hyphens only")
+
         sample_type = st.text_input(
             "Sample Type",
-            placeholder="e.g. Blood, Urine, Tissue"
-        )
+            placeholder="e.g. Blood, Urine, Tissue")
+
         collected_by = st.text_input(
             "Collected By",
-            placeholder="Name of person who collected the sample"
-        )
+            placeholder="Name of person who collected the sample")
+
         notes = st.text_area(
             "Notes (optional)",
-            placeholder="Any additional information"
-        )
+            placeholder="Any additional information")
+
         submitted = st.form_submit_button("Add Sample")
 
         if submitted:
