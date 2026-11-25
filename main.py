@@ -90,9 +90,13 @@ with tab3:
         new_status = st.selectbox("New Status", Sample.STATUSES)
 
         if st.button("Update Status"):
-            database.update_sample_status(selected_id, new_status)
-            st.success(f"Status updated to {new_status}")
-            st.rerun()
+            try:
+                database.update_sample_status(selected_id, new_status)
+                st.success(f"Status updated to {new_status}")
+                st.rerun()
+
+            except sqlite3.Error:
+                st.error("Could not update sample status due to a database error.")
             
 with tab4:
     st.subheader("Delete Sample")
