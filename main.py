@@ -125,16 +125,20 @@ with tab4:
 
 with tab5:
     st.subheader("Summary")
+
     samples = database.get_all_samples()
+
     if not samples:
         st.info("No samples yet.")
     else:
         from collections import Counter
         status_counts = Counter(s["status"] for s in samples)
+        st.metric("Total Samples", len(samples))
         st.write("**Samples by status:**")
         st.write(dict(status_counts))
-        st.metric("Total Samples", len(samples))
 
+        for status, count in sorted(status_counts.items()):
+            st.write("f**{status}:** {count}")
 
         st.divider()
 st.caption("LabTrace • Sample tracking tool")
