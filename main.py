@@ -114,10 +114,14 @@ with tab4:
         confirm = st.checkbox("I confirm I want to delete this sample", key="delete_confirm")
 
         if st.button("Delete Sample", disabled=not confirm):
-            database.delete_sample(selected_id)
-            st.success("Sample deleted.")
-            st.session_state.reset_delete_confirm = True
-            st.rerun()
+            try:
+                database.delete_sample(selected_id)
+                st.session_state.reset_delete_confirm = True
+                st.success("Sample deleted.")
+                st.rerun()
+
+            except sqlite3.Error:
+                st.error("Could not delete sample due to a database error.")
 
 with tab5:
     st.subheader("Summary")
