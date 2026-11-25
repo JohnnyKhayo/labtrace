@@ -2,9 +2,10 @@ import streamlit as st
 import database
 import sqlite3
 
+st.set_page_config(page_title="LabTrace", layout="wide")
+
 database.create_table()
 
-st.set_page_config(page_title="LabTrace", layout="wide")
 st.title("LabTrace")
 st.write("Track lab samples and their status.")
 
@@ -18,12 +19,14 @@ with tab1:
 
     samples = database.get_all_samples()
 
-    if search:
-        search = search.lower()
+    if search and search.strip():
+        term = search.strip().lower()
         samples = [
             s for s in samples
-            if search in s["sample_id"].lower() or search in s["sample_type"].lower()]
-
+            if term in str(s.get("sample_id") or "").lower()
+            or search in str(s.get("sample_type") or "").lower()
+        ]
+    
     if samples:
         st.dataframe(samples, use_container_width=True)
     else:
