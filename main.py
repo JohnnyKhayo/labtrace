@@ -74,7 +74,7 @@ with tab2:
 
                 except sqlite3.IntegrityError:
                     st.error("A sample with this ID already exists.")
-                except Exception as e:
+                except Exception:
                     st.error(f"A database error occurred. Please try again")
 
               
@@ -91,13 +91,16 @@ with tab3:
 
         if st.button("Update Status"):
             try:
-                database.update_sample_status(selected_id, new_status)
-                st.success(f"Status updated to {new_status}")
-                st.rerun()
+                updated = database.update_sample_status(selected_id, new_status)
 
+                if updated:
+                    st.success(f"Status updated to {new_status}")
+                    st.rerun()
+                else:
+                    st.warning(f"Sample not found. No changes were made.")
             except sqlite3.Error:
                 st.error("Could not update sample status due to a database error.")
-            
+                
 with tab4:
     st.subheader("Delete Sample")
     samples = database.get_all_samples()
@@ -135,10 +138,9 @@ with tab5:
         status_counts = Counter(s["status"] for s in samples)
         st.metric("Total Samples", len(samples))
         st.write("**Samples by status:**")
-        st.write(dict(status_counts))
 
         for status, count in sorted(status_counts.items()):
-            st.write("f**{status}:** {count}")
+            st.write(f"**{status}:** {count}")
 
         st.divider()
-st.caption("LabTrace • Sample tracking tool")
+        st.caption("LabTrace • Sample tracking tool")

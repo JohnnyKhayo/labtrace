@@ -46,12 +46,14 @@ def get_all_samples():
 def update_sample_status(sample_id, new_status):
     """Update the status of a sample."""
     with get_connection() as conn:
-        conn.execute(
+        cursor = conn.execute(
             """
             UPDATE samples
             SET status = ?
             WHERE sample_id = ?
             """, (new_status, sample_id))
+        
+        return cursor.rowcount > 0
 
 def delete_sample(sample_id):
     """Delete a sample from the database by its sample_id."""
