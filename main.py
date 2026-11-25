@@ -24,7 +24,7 @@ with tab1:
         samples = [
             s for s in samples
             if term in str(s.get("sample_id") or "").lower()
-            or search in str(s.get("sample_type") or "").lower()
+            or term in str(s.get("sample_type") or "").lower()
         ]
     
     if samples:
@@ -67,13 +67,15 @@ with tab2:
             else:
                 try:
                     database.add_sample(sample)
-                    st.success("Sample added successfully.")
+
                     st.session_state.form_key += 1
+                    st.success("Sample added successfully.")
                     st.rerun()
+
                 except sqlite3.IntegrityError:
                     st.error("A sample with this ID already exists.")
                 except Exception as e:
-                    st.error(f"Could not add sample: {e}")
+                    st.error(f"A database error occurred. Please try again")
 
               
 with tab3:
