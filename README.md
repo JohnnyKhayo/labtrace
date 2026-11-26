@@ -214,6 +214,6 @@ This provides a quick overview of sample distribution across the laboratory work
 - Database backup and recovery
 - Automated testing
 
-## Author
+## License
 
-Developed by @Johnny khayo as a Python programming and laboratory sample management project.
+This project is licensed under the MIT License. Feel free to use and modify this script as you see fit.

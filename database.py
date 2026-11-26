@@ -1,6 +1,4 @@
 import sqlite3
-
-
 DB_NAME = "labtrace.db"
 from sample import Sample
 

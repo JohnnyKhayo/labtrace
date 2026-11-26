@@ -21,7 +21,7 @@ with tab1:
 
     if search and search.strip():
         term = search.strip().lower()
-        samples = [
+        samples = [#list comprehension
             s for s in samples
             if term in str(s.get("sample_id") or "").lower()
             or term in str(s.get("sample_type") or "").lower()
@@ -100,7 +100,7 @@ with tab3:
                     st.warning(f"Sample not found. No changes were made.")
             except sqlite3.Error:
                 st.error("Could not update sample status due to a database error.")
-                
+
 with tab4:
     st.subheader("Delete Sample")
     samples = database.get_all_samples()
@@ -128,7 +128,6 @@ with tab4:
 
 with tab5:
     st.subheader("Summary")
-
     samples = database.get_all_samples()
 
     if not samples:
