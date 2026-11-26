@@ -64,3 +64,57 @@ def verify_password(password, stored_hash, salt):
     password_hash, _ = hash_password(password, salt)
 
     return hmac.compare_digest(stored_hash, password_hash)
+
+
+def register_user(full_name, email, password, confirm_password):
+    """Register a new staff account."""
+
+    full_name = full_name.strip()
+    email = email.strip().lower()
+
+    # Check required fields
+    if not full_name:
+        return False, "Full name is required."
+
+    if not email:
+        return False, "Email is required."
+
+    # Validate email
+    if not validate_email(email):
+        return False, "Please enter a valid email address."
+
+    # Validate password
+    password_error = validate_password(password)
+
+    if password_error:
+        return False, password_error
+
+    # Confirm password
+    if password != confirm_password:
+        return False, "Passwords do not match."
+
+    # Hash password before storing it
+    password_hash, salt = hash_password(password)
+
+    try:
+        with closing(get_connection()) as conn:
+            with conn:
+                conn.execute("""
+                    INSERT INTO users (
+                        full_name,
+                        email,
+                        password_hash,
+                        salt
+                    )
+                    VALUES (?, ?, ?, ?)
+                """, (
+                    full_name,
+                    email,
+                    password_hash,
+                    salt
+                ))
+
+        return True, "Account created successfully."
+
+    except sqlite3.IntegrityError:
+        return False, "An account with this email already exists."
