@@ -118,3 +118,47 @@ def register_user(full_name, email, password, confirm_password):
 
     except sqlite3.IntegrityError:
         return False, "An account with this email already exists."
+
+
+
+def authenticate_user(email, password):
+    """Verify login credentials and return safe user details."""
+
+    email = email.strip().lower()
+
+    if not email or not password:
+        return False, "Invalid email or password."
+
+    with closing(get_connection()) as conn:
+        user = conn.execute("""
+            SELECT
+                id,
+                full_name,
+                email,
+                password_hash,
+                salt,
+                role
+            FROM users
+            WHERE email = ?
+        """, (email,)).fetchone()
+
+
+    if user is None:
+        return False, "Invalid email or password."
+
+    if not verify_password(
+        password,
+        user["password_hash"],
+        user["salt"]):
+
+        return False, "Invalid email or password."
+
+    # Return only information needed by the application
+    user_details = {
+        "id": user["id"],
+        "full_name": user["full_name"],
+        "email": user["email"],
+        "role": user["role"]
+    }
+
+    return True, user_details
